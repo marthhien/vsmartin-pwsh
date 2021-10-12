@@ -18,29 +18,22 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/marthhien/vsmartinpwsh.git"
+		"url": "https://github.com/marthhien/vsmartin-pwsh.git"
 	},
 	"activationEvents": [
 		"onView:validateMenu"
 	],
 	"main": "./src/extension.ts",
 	"contributes": {
-		"commands": [
-			{
-				"command": "extension.martinpwsh",
-				"title": "Lancer martinpwsh"
-			}
-		],
 		"viewsContainers": {
 			"activitybar": [
 				{
 					"id": "marthhien-vsmartin-pwsh",
-					"title": "Extension vsmartinpwsh",
+					"title": "Extension vsmartin-pwsh",
 					"icon": "./vsmartin-pwsh-icon.svg"
 				}
 			]
-		}
-	},
+		},
 	"views": {
 			"myview": [
 				{
@@ -93,7 +86,8 @@
 					"when": "view == dataMenu && viewItem == file"
 				}
 			]
-		},
+		}
+	},
 	"scripts": {
 		"pretest": "npm run compile && npm run lint",
 		"test": "node ./out/test/runTest.js",
