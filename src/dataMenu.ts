@@ -99,7 +99,7 @@ export class DataMenu extends vscode.TreeItem {
         public isSelected?: boolean,
         public children?: DataMenu[],
         public readonly command?: vscode.Command,
-        public iconPath?: vscode.Uri,
+        public iconPath?:any
     ) {
         super(label, collapsibleState);
     }
