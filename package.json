@@ -1,7 +1,9 @@
 {
 	"name": "vsmartin-pwsh",
 	"displayName": "vsmartin-pwsh",
-	"description": "Integrate vsmartin-pwsh into VS Code.h",
+	"publisher": "marthhien",
+	"homepage": "https://github.com/marthhien",
+	"description": "Integrate vsmartin-pwsh into VS Code",
 	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.60.0"
@@ -9,37 +11,114 @@
 	"categories": [
 		"Other"
 	],
+	"icon": "./vsmartin-pwsh-icon.png",
+	"galleryBanner": {
+		"color": "#ACD1EC",
+		"theme": "light"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/marthhien/vsmartinpwsh.git"
+	},
 	"activationEvents": [
-		"onCommand:vsmartin-pwsh"
+		"onView:validateMenu"
 	],
-	"main": "./extension.ts",
+	"main": "./src/extension.ts",
 	"contributes": {
 		"commands": [
 			{
-				"command": "vsmartin-pwsh",
-				"title": "vsmartin-pwsh start"
+				"command": "extension.martinpwsh",
+				"title": "Lancer martinpwsh"
 			}
-		]
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "marthhien-vsmartin-pwsh",
+					"title": "Extension vsmartinpwsh",
+					"icon": "./vsmartin-pwsh-icon.svg"
+				}
+			]
+		}
 	},
+	"views": {
+			"myview": [
+				{
+					"id": "validateMenu",
+					"name": "Validate"
+				},
+				{
+					"id": "dataMenu",
+					"name": "Data"
+				}
+			]
+		},
+		"commands": [
+			{
+				"command": "validateMenu.refreshList",
+				"title": "Validate the things!",
+				"icon": "resources/spinner.svg"
+			},
+			{
+				"command": "dataMenu.toggleSelection",
+				"title": "Toggle file selection",
+				"icon": {
+					"light": "resources/light/check-empty.svg",
+					"dark": "resources/dark/check-empty.svg"
+				}
+			},
+			{
+				"command": "dataMenu.refreshList",
+				"title": "Refresh List",
+				"icon": "resources/spinner.svg"
+			}
+			
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "validateMenu.refreshList",
+					"when": "view == validateMenu",
+					"group": "navigation"
+				},
+				{
+					"command": "dataMenu.refreshList",
+					"when": "view == dataMenu",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "dataMenu.toggleSelection",
+					"when": "view == dataMenu && viewItem == file"
+				}
+			]
+		},
 	"scripts": {
+		"pretest": "npm run compile && npm run lint",
+		"test": "node ./out/test/runTest.js",
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
+		"lint": "eslint . --ext .ts,.tsx",
 		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./test/runTest.js"
+		"download-api": "vscode-dts dev",
+		"postdownload-api": "vscode-dts main",
+		"postinstall": "npm run download-api"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.60.0",
 		"@types/glob": "^7.1.4",
 		"@types/mocha": "^9.0.0",
 		"@types/node": "14.x",
+		"@types/vscode": "^1.60.0",
 		"@typescript-eslint/eslint-plugin": "^4.31.1",
 		"@typescript-eslint/parser": "^4.31.1",
+		"@vscode/test-electron": "^1.6.2",
 		"eslint": "^7.32.0",
 		"glob": "^7.1.7",
 		"mocha": "^9.1.1",
+		"tslint": "^5.12.1",
+		"vscode": "^1.1.28",
 		"typescript": "^4.4.3",
-		"@vscode/test-electron": "^1.6.2"
+		"vscode-dts": "^0.3.1"
 	}
 }
