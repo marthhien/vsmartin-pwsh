@@ -8,9 +8,9 @@ Start Debugging F5 or copy the repository into %USERPROFILE%\\.vscode\extensions
 
 ## Usage
 
-- Ctrl + Shift + P
-- Type `vsmartin-pswh` in the Search bar
+- This Extension start on view
 
 ## The Treeview functionnality
 
-- 
+- coming soon
+
