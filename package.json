@@ -21,46 +21,133 @@
 		"url": "https://github.com/marthhien/vsmartin-pwsh.git"
 	},
 	"activationEvents": [
-		"*"
+		"onView:pwsh-list",
+		"onCommand:pwsh.add",
+		"onCommand:pwsh.order",
+		"onCommand:pwsh.refresh",
+		"onCommand:pwsh.item.remove"
 	],
-	"main": "./src/extension.ts",
+	"main": "./out/extension.js",
 	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "pwsh-watch",
+			"properties": {
+			  "pwsh-watch.favorites": {
+				"type": "array",
+				"default": [
+				  "163407",
+				  "161017"
+				],
+				"description": ""
+			  },
+			  "pwsh-watch.interval": {
+				"type": "number",
+				"default": 2,
+				"description": ""
+			  }
+			}
+		  },
 	"views": {
-			"myview": [
+			"pwsh-watch": [
 				{
 					"id": "vsmartin-pwsh-welcome",
 					"name": "Extension vsmartin-pwsh"
+				},
+				{
+				  "name": "liste",
+				  "id": "pwsh-list"
 				}
 			]
 		},
 		"viewsWelcome": [
 			{
 			  "view": "vsmartin-pwsh-welcome",
-			  "contents": "Bienvenue dans vsmartin-pwsh \n [https://github.com/marthhien](https://github.com/marthhien)\n[Débuter](command:vsmartin-pwsh-practice.registerDataProvider)"	
+			  "contents": "Bienvenue dans vsmartin-pwsh \n [https://github.com/marthhien](https://github.com/marthhien)"	
 			}
 		  ],
 		"commands": [
 			{
-				"command": "vsmartin-pwsh-practice.registerDataProvider",
-				"title": "TreeView DataProvider"
-			}			
-		],
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "myview",
-					"title": "Extension vsmartin-pwsh",
-					"icon": "./vsmartin-pwsh-icon.svg"
-				}
+			  "command": "pwsh.add",
+			  "title": "Ajouter",
+			  "icon": {
+				"light": "images/light/add.svg",
+				"dark": "images/dark/add.svg"
+			  }
+			},
+			{
+			  "command": "pwsh.order",
+			  "title": "Executer",
+			  "icon": {
+				"light": "images/light/run.svg",
+				"dark": "images/dark/run.svg"
+			  }
+			},
+			{
+			  "command": "pwsh.refresh",
+			  "title": "Actualiser",
+			  "icon": {
+				"light": "images/light/refresh.svg",
+				"dark": "images/dark/refresh.svg"
+			  }
+			},
+			{
+			  "command": "pwsh.item.remove",
+			  "title": "Effacer",
+			  "icon": {
+			  "light": "images/light/del.svg",
+			  "dark": "images/dark/del.svg"
+			}
+		  }
+		  ],
+		  "menus": {
+			"view/title": [
+			  {
+				"command": "pwsh.refresh",
+				"when": "view == pwsh-list",
+				"group": "navigation"
+			  },
+			  {
+				"command": "pwsh.add",
+				"when": "view == pwsh-list",
+				"group": "navigation"
+			  },
+			  {
+				"command": "pwsh.remove",
+				"when": "view == pwsh-list",
+				"group": "navigation"
+			  },
+			  {
+				"command": "pwsh.order",
+				"when": "view == pwsh-list",
+				"group": "navigation"
+			  }
 			]
+		},
+			"view/item/context": [
+			  {
+				"command": "pwsh.item.remove",
+				"when": "view == pwsh-list",
+				"group": "inline"
+			  }
+			],
+			  "viewsContainers": {
+				"activitybar": [
+					{
+						"id": "pwsh-watch",
+						"title": "Extension vsmartin-pwsh",
+						"icon": "./vsmartin-pwsh-icon.svg"
+					}
+				]
 		}
 	},
-	"scripts": {
+	  	"scripts": {
 		"pretest": "npm run compile && npm run lint",
 		"test": "node ./out/test/runTest.js",
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"lint": "eslint . --ext .ts,.tsx",
+		"lint:fix": "eslint ./src --ext .ts --fix",
 		"watch": "tsc -watch -p ./",
 		"download-api": "vscode-dts dev",
 		"postdownload-api": "vscode-dts main",
@@ -75,11 +162,20 @@
 		"@typescript-eslint/parser": "^4.31.1",
 		"@vscode/test-electron": "^1.6.2",
 		"eslint": "^7.32.0",
+		"eslint-config-airbnb-base": "^14.2.0",
+		"eslint-config-prettier": "^6.11.0",
+		"eslint-plugin-import": "^2.22.0",
+		"eslint-plugin-prettier": "^3.1.4",
+		"prettier": "^2.0.5",
+		"ts-loader": "^8.0.2",
 		"glob": "^7.1.7",
 		"mocha": "^9.1.1",
 		"tslint": "^5.12.1",
 		"vscode": "^1.1.28",
 		"typescript": "^4.4.3",
 		"vscode-dts": "^0.3.1"
-	}
+	},
+	"dependencies": {
+		"string-width": "^4.2.0"
+	  }	
 }

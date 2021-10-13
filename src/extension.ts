@@ -1,31 +1,37 @@
-import * as vscode from "vscode";
+import { ExtensionContext, commands, window, workspace } from 'vscode';
+import Provider from './data/Provider';
+import pwshHandle from './data/Handle';
 
-class TreeViewItem extends vscode.TreeItem {
-	constructor(label: string, collapsibleState?: vscode.TreeItemCollapsibleState) {
-		super(label, collapsibleState);
-	}
-}
+export function activate(context: ExtensionContext) {
+  let interval = workspace.getConfiguration().get('pwsh-watch.interval', 2);
+  if (interval < 2) {
+    interval = 2;
+  }
 
-class DataProvider implements vscode.TreeDataProvider<TreeViewItem> {
-	getTreeItem(element: TreeViewItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
-		return element;
-	}
-	getChildren(element?: TreeViewItem): vscode.ProviderResult<TreeViewItem[]> {
-		return Promise.resolve([
-			new TreeViewItem('TreeItem-01'),
-			new TreeViewItem('TreeItem-02'),
-			new TreeViewItem('TreeItem-03'),
-		]);
-	}
-}
-export function activate(context: vscode.ExtensionContext) {
+  const provider = new Provider();
 
-  let disposable = vscode.commands.registerCommand('vsmartin-pwsh-practice.registerDataProvider', () => {
-		vscode.window.registerTreeDataProvider('vsmartin-pwsh-welcome', new DataProvider());
-  	vscode.window.showInformationMessage('Hello World from treeview practice!');
-	});
+  window.registerTreeDataProvider('pwsh-list', provider);
 
-	context.subscriptions.push(disposable);
+  setInterval(() => {
+    provider.refresh();
+  }, interval * 1000);
+
+  context.subscriptions.push(
+    commands.registerCommand(`pwsh.add`, () => {
+      provider.addpwsh();
+    }),
+    commands.registerCommand(`pwsh.order`, () => {
+      provider.changeOrder();
+    }),
+    commands.registerCommand(`pwsh.refresh`, () => {
+      provider.refresh();
+    }),
+    commands.registerCommand('pwsh.item.remove', (pwsh) => {
+      const { code } = pwsh;
+      pwshHandle.removeConfig(code);
+      provider.refresh();
+    })
+  );
 }
 
 export function deactivate() {}

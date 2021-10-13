@@ -8,11 +8,11 @@ class DataMenuProvider {
     constructor() {
         this._onDidChangeTreeData = new vscode.EventEmitter();
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
-        this._workspaceRoot = vscode.workspace.rootPath;
-        this._workspaceFolders = fs.readdirSync(this._workspaceRoot);
-        let workspaceFolders = this._workspaceFolders;
-        for (let folder in workspaceFolders) {
-            if (workspaceFolders[folder] === "Data") {
+        this._workspaceRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
+        this._workspaceFolders = vscode.workspace.workspaceFolders;
+        // let workspaceFolders: Array<string> = this._workspaceFolders;
+        for (let folder in vscode.workspace.workspaceFolders) {
+            if (vscode.workspace.workspaceFolders[folder].uri.fsPath === "Data") {
                 let checkIsDirectory = fs.statSync(`${this._workspaceRoot}\\Data`).isDirectory();
                 if (checkIsDirectory === true) {
                     this._dataFolder = `${this._workspaceRoot}\\Data`;
@@ -35,7 +35,7 @@ class DataMenuProvider {
         }
         else {
             let jsonChildren = this.getJSONFiles(this._dataFolder);
-            let listParent = new DataMenu("Objects", vscode.TreeItemCollapsibleState.Expanded, this._workspaceRoot, null, null, []);
+            let listParent = new DataMenu("Objects", vscode.TreeItemCollapsibleState.Expanded, vscode.workspace.workspaceFolders[0].uri, null, null, []);
             let dataMenu = this.createDataMenu(listParent, jsonChildren);
             return [dataMenu];
         }

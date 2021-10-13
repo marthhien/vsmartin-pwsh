@@ -1,74 +1,41 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ValidateMenu = exports.ValidateMenuProvider = void 0;
+exports.deactivate = exports.activate = void 0;
 const vscode = require("vscode");
-const validateMenuItems = require("./validateMenu.json");
-class ValidateMenuProvider {
+
+function activate(context) {
+    let disposable = vscode.commands.registerCommand('vsmartin-pwsh-practice.registerDataProvider', () => {
+         vscode.window.showInformationMessage('Hello World from treeview practice!');
+     });
+     vscode.window.registerTreeDataProvider('pwsh-list', new TreeDataProvider());
+     context.subscriptions.push(disposable);
+ }
+  
+exports.activate = activate;
+class TreeDataProvider {
     constructor() {
-        this._onDidChangeTreeData = new vscode.EventEmitter();
-        this.onDidChangeTreeData = this
-            ._onDidChangeTreeData.event;
-    }
-    refresh() {
-        this._onDidChangeTreeData.fire();
+        this.data = [new TreeItem('Commandes', [
+                new TreeItem('Powershell', [new TreeItem('cmd pwsh1'), new TreeItem('cmd pwsh2'), new TreeItem('cmd pwsh3')]),
+                new TreeItem('VM', [new TreeItem('horizon1'), new TreeItem('horizon2'), new TreeItem('horizon3')])
+            ])];
     }
     getTreeItem(element) {
-        if (element) {
-            console.log(`element: ${element}`);
-            return element;
-        }
         return element;
     }
     getChildren(element) {
-        if (element) {
-            return Promise.resolve([]);
+        if (element === undefined) {
+            return this.data;
         }
-        else {
-            return Promise.resolve(this.getValidateMenu());
-        }
-    }
-    getValidateMenu() {
-        const toMenu = (menuTitle, collapsibleState) => {
-            return new ValidateMenu(menuTitle, collapsibleState);
-        };
-        let menuItems = [];
-        let menuHeadings = validateMenuItems.children;
-        let j = 0;
-        for (var i in menuHeadings) {
-            // send the parent as a menu item
-            if (menuHeadings[i] !== null && typeof menuHeadings[i] === "object") {
-                let firstChildLabel = Object.keys(validateMenuItems.children)[j];
-                let parentMenuItem = toMenu(firstChildLabel, vscode.TreeItemCollapsibleState.Collapsed);
-                menuItems.push(parentMenuItem);
-                // send each child object to the view
-                for (var k = 0; k < menuHeadings[i].length; k++) {
-                    if (menuHeadings[i][k] !== null &&
-                        typeof menuHeadings[i][k] === "object") {
-                        let secondChildLabel = menuHeadings[i][k].name;
-                        let childMenuItem = toMenu(secondChildLabel, vscode.TreeItemCollapsibleState.None);
-                        menuItems.push(childMenuItem);
-                    }
-                    else {
-                        return [];
-                    }
-                }
-            }
-            else {
-                return [];
-            }
-            j++;
-        }
-        return menuItems;
+        return element.children;
     }
 }
-exports.ValidateMenuProvider = ValidateMenuProvider;
-class ValidateMenu extends vscode.TreeItem {
-    constructor(label, collapsibleState, command) {
-        super(label, collapsibleState);
-        this.label = label;
-        this.collapsibleState = collapsibleState;
-        this.command = command;
+class TreeItem extends vscode.TreeItem {
+    constructor(label, children) {
+        super(label, children === undefined ? vscode.TreeItemCollapsibleState.None :
+            vscode.TreeItemCollapsibleState.Expanded);
+        this.children = children;
     }
 }
-exports.ValidateMenu = ValidateMenu;
+function deactivate() { }
+exports.deactivate = deactivate;
 //# sourceMappingURL=extension.js.map
